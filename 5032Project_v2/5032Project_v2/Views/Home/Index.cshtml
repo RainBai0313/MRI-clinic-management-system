@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<main>
+    <style>
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .centered-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+
+    <section class="row" aria-labelledby="aspnetTitle" style="background: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('../images/mri.jpg'); position: relative; border-radius: 25px; height:fit-content">
+        <img src="../images/mri.jpg" alt="" style="visibility: hidden; max-width: auto; height: auto;">
+        <h1 id="title" style="text-align:center; position: absolute; top: 10%; left: 0; width: 100%;">Our services</h1>
+        <p class="lead" style="text-align:center; position: absolute; top: 30%; left: 0; width: 100%;"> <b>MRI Connect Hub is an all-in-one portal tailored for the Medical Imaging Services company. It facilitates appointment bookings for MRI scans, manages user accounts, offers interactive views of MRI data, and provides users with essential resources like virtual MRI tours. Enhanced by role-based authentication, users and admins have designated views and capabilities ensuring both security and functionality.</b></p>
+    </section>
+
+    <hr />
+
+    <section class="row" aria-labelledby="aspnetTitle">
+        <section class="col-md-5" aria-labelledby="gettingStartedTitle">
+            <h1 id="title">Introduction Magnetic resonance imaging (MRI)</h1>
+            <p>Magnetic resonance imaging (MRI) is a medical imaging technique used in radiology to form pictures of the anatomy and the physiological processes of the body. MRI scanners use strong magnetic fields, magnetic field gradients, and radio waves to generate images of the organs in the body. MRI does not involve X-rays or the use of ionizing radiation, which distinguishes it from computed tomography (CT) and positron emission tomography (PET) scans. MRI is a medical application of nuclear magnetic resonance (NMR) which can also be used for imaging in other NMR applications, such as NMR spectroscopy.</p>
+            <p><a href="https://asp.net" class="btn btn-primary btn-md">Make a CT scan appointment &raquo;</a></p>
+        </section>
+        <section class="col-md-7" aria-labelledby="librariesTitle">
+            <img src="~/images/homepagemean.jpg" class="w3-round w3-image w3-opacity-min" alt="Table Setting" style="border-radius: 25px">
+        </section>
+    </section>
+
+    <hr />
+
+    <div class="row">
+        <section class="col-md-4 centered-content" aria-labelledby="gettingStartedTitle" ">
+            <h2 id="gettingStartedTitle" style="text-align:center">Make an appointment</h2>
+            <a href="https://go.microsoft.com/fwlink/?LinkId=301866"><img src="../images/calendar.jpg" style="width:200px"></a>
+        </section>
+        <section class="col-md-4 centered-content" aria-labelledby="librariesTitle">
+            <h2 id="librariesTitle" style="text-align:center">My Dashboard</h2>
+            <a href="https://go.microsoft.com/fwlink/?LinkId=301866"><img src="../images/dashboard.jpg" style="width:200px"></a>
+        </section>
+        <section class="col-md-4 centered-content" aria-labelledby="hostingTitle">
+            <h2 id="librariesTitle" style="text-align:center">Leave a feedback</h2>
+            <a href="https://go.microsoft.com/fwlink/?LinkId=301866"><img src="../images/feedback.png" style="width: 200px; background-color: #abdbe3"></a>
+        </section>
+    </div>
+
+</main>

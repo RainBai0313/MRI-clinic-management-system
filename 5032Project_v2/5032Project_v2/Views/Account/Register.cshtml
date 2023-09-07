@@ -1,0 +1,75 @@
+﻿@model _5032Project_v2.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<main aria-labelledby="title">
+    <h2 id="title">@ViewBag.Title.</h2>
+
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <h4>Create a new account.</h4>
+        <hr />
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        <!-- Add this for First Name -->
+        <div class="row">
+            @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <!-- Add this for Last Name -->
+        <div class="row">
+            @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <!-- Add this for Date of Birth -->
+        <div class="row">
+            @Html.LabelFor(m => m.DateOfBirth, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <!-- The phone number should already be in the model, but if you added it again -->
+        <div class="row">
+            @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="row">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-md-2 col-md-10">
+                <input type="submit" value="Register" class="btn btn-outline-dark" />
+            </div>
+        </div>
+    }
+</main>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
