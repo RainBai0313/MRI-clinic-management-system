@@ -6,6 +6,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using _5032Project_v2.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace _5032Project_v2
 {
@@ -63,6 +64,27 @@ namespace _5032Project_v2
             //    ClientId = "",
             //    ClientSecret = ""
             //});
+
+            var context = new ApplicationDbContext();
+
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+
+            // Create Admin role if it doesn't exist
+            if (!roleManager.RoleExists("Admin"))
+            {
+                var role = new IdentityRole();
+                role.Name = "Admin";
+                roleManager.Create(role);
+            }
+
+            // Similarly, create other roles, e.g., Patient
+            if (!roleManager.RoleExists("Patient"))
+            {
+                var role = new IdentityRole();
+                role.Name = "Patient";
+                roleManager.Create(role);
+            }
+
         }
     }
 }

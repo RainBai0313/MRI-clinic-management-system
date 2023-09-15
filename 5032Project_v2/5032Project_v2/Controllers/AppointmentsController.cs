@@ -15,11 +15,53 @@ namespace _5032Project_v2.Controllers
     {
         private AppointmentModel db = new AppointmentModel();
 
+        private ApplicationDbContext _context;
+
+        public AppointmentsController()
+        {
+            _context = new ApplicationDbContext();
+        }
+
         // GET: Appointments
+        [Authorize]
+        [Authorize]
         public ActionResult Index()
         {
-            return View(db.Appointments.ToList());
+            if (User.IsInRole("Admin"))
+            {
+                var appointments = db.Appointments.ToList();
+
+                var appointmentViewModels = appointments.Select(a => new AppointmentViewModel
+                {
+                    AppointmentId = a.AppointmentId,
+                    DateTime = a.DateTime,
+                    Status = a.Status,
+                    FirstName = _context.Users.FirstOrDefault(u => u.Id == a.UserId)?.FirstName,
+                    LastName = _context.Users.FirstOrDefault(u => u.Id == a.UserId)?.LastName
+                    // add other properties if necessary
+                }).ToList();
+
+                return View(appointmentViewModels);
+            }
+            else
+            {
+                string currentUserId = User.Identity.GetUserId();
+                var userAppointments = db.Appointments.Where(a => a.UserId == currentUserId).ToList();
+
+                var userAppointmentViewModels = userAppointments.Select(a => new AppointmentViewModel
+                {
+                    AppointmentId = a.AppointmentId,
+                    DateTime = a.DateTime,
+                    Status = a.Status,
+                    FirstName = _context.Users.FirstOrDefault(u => u.Id == a.UserId)?.FirstName,
+                    LastName = _context.Users.FirstOrDefault(u => u.Id == a.UserId)?.LastName
+                    // add other properties if necessary
+                }).ToList();
+
+                return View(userAppointmentViewModels);
+            }
         }
+
 
         // GET: Appointments/Details/5
         public ActionResult Details(int? id)
@@ -37,6 +79,7 @@ namespace _5032Project_v2.Controllers
         }
 
         // GET: Appointments/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -48,7 +91,7 @@ namespace _5032Project_v2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Create([Bind(Include = "AppointmentId,UserId,DateTime,Status")] Appointment appointment)
+        public ActionResult Create([Bind(Include = "DateTime")] Appointment appointment)
         {
 
             appointment.UserId = User.Identity.GetUserId();

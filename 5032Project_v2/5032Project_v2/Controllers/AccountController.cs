@@ -79,6 +79,18 @@ namespace _5032Project_v2.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    var user = await UserManager.FindByEmailAsync(model.Email);
+                    if (user != null)
+                    {
+                        if (await UserManager.IsInRoleAsync(user.Id, "Admin"))
+                        {
+                            return RedirectToAction("Admin", "Home"); // replace with your admin action and controller
+                        }
+                        else if (await UserManager.IsInRoleAsync(user.Id, "Patient"))
+                        {
+                            return RedirectToAction("Index", "Home"); // redirect to home index for patients
+                        }
+                    }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

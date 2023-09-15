@@ -1,0 +1,34 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Admin</title>
+    <!-- Add this in the head section of your layout view -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h3 class="text-center mb-4">Welcome to Admin Dashboard @ViewBag.FirstName @ViewBag.LastName</h3>
+
+    <div class="row">
+
+        <!-- Content Section -->
+        <div class="col-md-5">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Feature 1
+                </div>
+                <div class="card-body">
+                    Content for feature 1.
+                </div>
+            </div>
+
+            <!-- Add more features/cards as needed -->
+        </div>
+    </div>
+</body>
+</html>

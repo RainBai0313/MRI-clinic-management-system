@@ -5,13 +5,32 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" />
+
+@{
+    var statusList = new SelectList(
+        new List<Object>
+        {
+            new { value = 0, text = "Waiting for approval" },
+            new { value = 1, text = "Approved" },
+            new { value = 2, text = "Waiting for the imaging" },
+            new { value = 3, text = "Job has been done" },
+            new { value = 4, text = "Reject" }
+                                },
+        "value",
+        "text",
+        Model.Status
+    );
+}
+
 <h2>Edit</h2>
 
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Appointment</h4>
         <hr />
@@ -28,8 +47,11 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.DateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DateTime, new { htmlAttributes = new { @class = "form-control" } })
+            <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                @Html.TextBoxFor(model => model.DateTime, new { @class = "form-control datetimepicker-input", data_target = "#datetimepicker1" })
+                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
                 @Html.ValidationMessageFor(model => model.DateTime, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -37,10 +59,11 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownListFor(model => model.Status, statusList, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
             </div>
         </div>
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -55,5 +78,16 @@
 </div>
 
 @section Scripts {
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <script>
+    $(function () {
+        $('#datetimepicker1').datetimepicker({
+            format: 'MM/DD/YYYY hh:mm A'
+        });
+    });
+    </script>
     @Scripts.Render("~/bundles/jqueryval")
 }
