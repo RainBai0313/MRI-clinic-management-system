@@ -1,8 +1,9 @@
-﻿@model _5032Project_v2.Models.Appointment
+﻿@model _5032Project_v2.Models.AppointmentViewModel
+
 
 @{
     ViewBag.Title = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -15,62 +16,73 @@
             new { value = 0, text = "Waiting for approval" },
             new { value = 1, text = "Approved" },
             new { value = 2, text = "Waiting for the imaging" },
-            new { value = 3, text = "Job has been done" },
+            new { value = 3, text = "Job has been completed" },
             new { value = 4, text = "Reject" }
-                                },
+                                                        },
         "value",
         "text",
         Model.Status
     );
 }
 
-<h2>Edit</h2>
-
-
-@using (Html.BeginForm())
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Appointment</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.AppointmentId)
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.AppointmentId)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.UserId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DateTime, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                @Html.TextBoxFor(model => model.DateTime, new { @class = "form-control datetimepicker-input", data_target = "#datetimepicker1" })
-                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                </div>
-                @Html.ValidationMessageFor(model => model.DateTime, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Status, statusList, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    <h2>Edit Appointment for @Model.FirstName @Model.LastName</h2>
+    <!-- rest of your form -->
 
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+    <div class="form-group">
+        <h4>@Html.DisplayName("At Date Time:") @_5032Project_v2.Controllers.AppointmentsController.FormatAppointmentTime(Model.DateTime)</h4>
+        @Html.HiddenFor(model => model.DateTime)
+    </div>
+    <br>
+    <div class="form-group">
+        <h3>@Html.DisplayName("Update the Appointment Status:")</h3>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.Status, statusList, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
         </div>
     </div>
+    <br>
+    <hr>
+
+    <div>
+        <h3>
+            MRI Records:     @Html.ActionLink("Add MRI Record", "AddMRIRecord", "Appointments", new { appointmentId = Model.AppointmentId }, new { @class = "btn btn-primary" })
+        </h3>
+        <ul>
+            @foreach (var mriRecord in Model.MRIRecords)
+            {
+                <li>
+                    <strong>Result:</strong> @mriRecord.Result
+                    @if (!string.IsNullOrEmpty(mriRecord.FileName))
+                    {
+                        <span>
+                            | <strong>File:</strong>
+                            <a href="@Url.Content("~/Records/" + mriRecord.FileName)">
+                                @mriRecord.FileName
+                            </a>
+                        </span>
+                    }
+                    @Html.ActionLink("Delete", "DeleteMRIRecord", "Appointments", new { id = mriRecord.Id }, new { onclick = "return confirm('Are you sure you want to delete this record?');", data_method = "post" })
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
 <div>
@@ -78,16 +90,14 @@
 </div>
 
 @section Scripts {
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <script>
-    $(function () {
-        $('#datetimepicker1').datetimepicker({
-            format: 'MM/DD/YYYY hh:mm A'
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                format: 'MM/DD/YYYY hh:mm A'
+            });
         });
-    });
     </script>
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    @Scripts.Render("~/bundles/jqueryval")}

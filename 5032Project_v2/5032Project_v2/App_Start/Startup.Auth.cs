@@ -59,11 +59,11 @@ namespace _5032Project_v2
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "416074345221-gj677tgk45m3ihpofp5jd6bc67s5vhdb.apps.googleusercontent.com",
+                ClientSecret = "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"
+            });
 
             var context = new ApplicationDbContext();
 
@@ -84,6 +84,13 @@ namespace _5032Project_v2
                 role.Name = "Patient";
                 roleManager.Create(role);
             }
+
+            if (!roleManager.RoleExists("Manager"))
+            {
+                var role = new IdentityRole("Manager");
+                roleManager.Create(role);
+            }
+
 
         }
     }

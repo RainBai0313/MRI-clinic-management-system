@@ -1,0 +1,24 @@
+﻿@model _5032Project_v2.Models.AddMRIRecordViewModel
+
+@{
+    ViewBag.Title = "Add MRI Record";
+}
+
+<h2>Add MRI Record</h2>
+
+@using (Html.BeginForm("SaveMRIRecord", "Appointments", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(model => model.AppointmentId)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Result)
+        @Html.TextAreaFor(model => model.Result, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Attachment")
+        <input type="file" name="MRIAttachment" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save MRI Record</button>
+}

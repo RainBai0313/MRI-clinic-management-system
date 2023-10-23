@@ -2,85 +2,182 @@
 
 
 @{
-    ViewBag.Title = "Index";
     if (User.IsInRole("Admin"))
     {
+        ViewBag.Title = "Index";
+
         Layout = "~/Views/Shared/_AdminLayout.cshtml";
     }
     else
     {
+        ViewBag.Title = "Index";
+
         Layout = "~/Views/Shared/_Layout.cshtml";
     }
 }
-
-<h2>Index</h2>
-
+<p>
+    <h2>All Appointments</h2>
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            User Name
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DateTime)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-        <th></th>
-    </tr>
+@if (TempData["FeedbackMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["FeedbackMessage"].ToString()
+    </div>
+}
 
-    @foreach (var item in Model)
-    {
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Export all Appointments to csv", "ExportToExcel")
+        | <a href="#" id="exportToPdf">Export to PDF</a>
+        | <a href="#" id="exportToPng">Export to PNG</a>
+    </p>
+    <div id="testDiv">This is a test</div>
+
+}
+<hr>
+<table class="table" id="appointmentsTable">
+    <thead>
         <tr>
-            <td>
-                @item.FirstName @item.LastName
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateTime)
-            </td>
-            <td>
-                @if (item.Status == 0)
-                {
-                    @:Waiting for approval
-                }
-                else if (item.Status == 1)
-                {
-                    @:Approved
-                }
-                else if (item.Status == 2)
-                {
-                    @:Waiting for the imaging
-                }
-                else if (item.Status == 3)
-                {
-                    @:Jobs has been done
-                }
-                else {
-                    @:Rejected
-                }
-            </td>
-            <td>
-                @{
-                    if (User.IsInRole("Admin"))
-                    {
-                        @Html.ActionLink("Edit", "Edit", new { id = item.AppointmentId })
-                        @: |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentId })
+            <th>
+                User Name
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTime)
+            </th>
+            <th>Clinic Selected</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
 
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.FirstName @item.LastName
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FormattedDateTime)
+                </td>
+                <td>@item.ClinicName</td>
+                <td>
+                    @if (item.Status == 0)
+                    {
+                        @:Waiting for approval
+                    }
+                    else if (item.Status == 1)
+                    {
+                        @:Approved
+                    }
+                    else if (item.Status == 2)
+                    {
+                        @:Waiting for the imaging
+                    }
+                    else if (item.Status == 3)
+                    {
+                        @:Jobs has been completed
                     }
                     else
                     {
-                        @Html.ActionLink("Details", "Details", new { id = item.AppointmentId })
-                        @: |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentId })
+                        @:Rejected
                     }
-                }
+                </td>
+                <td>
+                    @{
+                        if (User.IsInRole("Admin"))
+                        {
+                            @Html.ActionLink("Edit", "Edit", new { id = item.AppointmentId })
+                            @: |
+                            @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentId })
+                            if (item.FeedbackRating != null) // Assuming FeedbackRating is nullable. Adjust this condition accordingly.
+                            {
+                                @: |
+                                @Html.ActionLink("View Feedback", "ViewFeedback", new { id = item.AppointmentId })
+                            }
+                        }
+                        else
+                        {
+                            if (item.Status == 3)
+                            {
+                                @Html.ActionLink("Details", "Details", new { id = item.AppointmentId })
+                                @: |
+                                @Html.ActionLink("Leaving Feedback", "LeavingFeedback", new { id = item.AppointmentId })
+                                @: |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentId })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Details", "Details", new { id = item.AppointmentId })
+                                @: |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.AppointmentId })
+                            }
+                        }
+                    }
+                </td>
+            </tr>
+        }
 
-            </td>
-        </tr>
-    }
+    </tbody>
 
 </table>
+
+@section Scripts {
+    <!-- Load jQuery first -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Load DataTables -->
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+
+    <!-- Load other libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Custom script -->
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable();
+
+            $('#exportToPdf').click(function () {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF();
+                html2canvas($("#appointmentsTable")[0], {
+                    scale: 1
+                })
+                    .then(canvas => {
+                        const pdf = new jsPDF('p', 'mm', 'a4');
+                        pdf.addImage(canvas.toDataURL("image/png"), 'PNG', 10, 10, 190, 150);
+                        pdf.save('Appointments.pdf');
+                    })
+                    .catch(err => {
+                        console.error("Error capturing the canvas:", err);
+                    });
+            });
+
+            $('#exportToPng').click(function () {
+                html2canvas($("#appointmentsTable")[0], {
+                    scale: 1
+                }).then(canvas => {
+                    var link = document.createElement('a');
+                    link.href = canvas.toDataURL("image/png");
+                    link.download = 'Appointments.png';
+                    link.click();
+                });
+            });
+        });
+        html2canvas($("#testDiv")[0]);
+
+    </script>
+}
+
+<!-- Styles -->
+<link href="~/Content/DataTables/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+
+<link href="~/Content/DataTables/css/dataTables.bootstrap.min.css"
+      rel="stylesheet" />

@@ -3,32 +3,151 @@
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Admin</title>
-    <!-- Add this in the head section of your layout view -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .same-height-card {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-body-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
     <h3 class="text-center mb-4">Welcome to Admin Dashboard @ViewBag.FirstName @ViewBag.LastName</h3>
 
-    <div class="row">
-
-        <!-- Content Section -->
-        <div class="col-md-5">
-            <div class="card mb-4">
-                <div class="card-header">
-                    Feature 1
-                </div>
-                <div class="card-body">
-                    Content for feature 1.
-                </div>
-            </div>
-
-            <!-- Add more features/cards as needed -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <label for="appointmentSelection">Select Appointments:</label>
+            <select id="appointmentSelection" class="form-control">
+                <option value="all">All Appointments</option>
+                <option value="month">This Month Appointments</option>
+                <option value="week">This Week Appointments</option>
+            </select>
         </div>
     </div>
+
+    <div class="row">
+
+        <div class="col-md-5">
+            <div class="card mb-4 same-height-card">
+                <div class="card-header">
+                    Current Appointments Status:
+                </div>
+                <div class="card-body">
+                    <canvas id="appointmentStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card mb-4 same-height-card">
+                <div class="card-header">
+                    Completed Jobs Rating:
+                </div>
+                <div class="card-body">
+                    <canvas id="completedJobsRatingChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var ctx = document.getElementById('appointmentStatusChart').getContext('2d');
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Upcoming Appointments', 'Appointment in Processing', 'Completed Appointment'],
+                    datasets: [{
+                        data: [], // initially empty
+                        backgroundColor: ['#FF6384', '#63FF84', '#8463FF']
+                    }]
+                },
+                options: {
+                    onClick: function (event, array) {
+                        if (array[0]) {
+                            var index = array[0].index;
+                            switch (index) {
+                                case 0:
+                                    window.location.href = '/Appointments/IndexUpcoming';
+                                    break;
+                                case 1:
+                                    window.location.href = '/Appointments/IndexProcessing';
+                                    break;
+                                case 2:
+                                    window.location.href = '/Appointments/IndexFinished';
+                                    break;
+                            }
+                        }
+                    }
+                }
+            });
+
+            var ratingCtx = document.getElementById('completedJobsRatingChart').getContext('2d');
+            var ratingBarChart = new Chart(ratingCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
+                    datasets: [{
+                        label: 'Number of Ratings',
+                        data: [], // initially empty
+                        backgroundColor: ['#FF6384', '#63FF84', '#8463FF', '#FFD163', '#63D1FF']
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                min: 0,
+                            }
+                        }
+                    }
+                }
+            });
+
+            $('#appointmentSelection').change(function () {
+                var selectedValue = $(this).val();
+                loadChartData(selectedValue);
+            });
+
+            function loadChartData(timeFrame) {
+                $.ajax({
+                    url: '/Home/Admin',
+                    type: 'GET',
+                    data: { timeFrame: timeFrame },
+                    success: function (data) {
+                        // Update the pie chart data
+                        myPieChart.data.datasets[0].data = [data.StatusZeroCount, data.StatusOneTwoCount, data.StatusThreeCount];
+                        myPieChart.update();
+
+                        // Update the bar chart data
+                        ratingBarChart.data.datasets[0].data = [data.OneStarCount, data.TwoStarsCount, data.ThreeStarsCount, data.FourStarsCount, data.FiveStarsCount];
+                        ratingBarChart.update();
+                    },
+                    error: function (error) {
+                        console.log("Error:", error);
+                    }
+                });
+            }
+
+            // Initial chart load
+            loadChartData('all');
+        });
+    </script>
 </body>
 </html>

@@ -7,6 +7,8 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.jqueryui.min.css">
+
     @Scripts.Render("~/bundles/modernizr")
     <style>
         /* Custom styles for the sidebar */
@@ -33,7 +35,7 @@
 <body>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
         <div class="container">
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            @Html.ActionLink("MRI Mission Hub", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -54,7 +56,7 @@
                     <ul class="nav flex-column">
                         <h2></h2>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="~/Home/Admin">
                                 <i class="fas fa-tachometer-alt"></i> Dashboard
                             </a>
                         </li>
@@ -64,10 +66,22 @@
                                 <i class="fas fa-calendar"></i> Appointments
                             </a>
                         </li>
+                        <li class="nav-item ms-4">
+                            <!-- Margin for indentation -->
+                            <a class="nav-link" href="~/Appointments/IndexUpcoming"><small>Upcoming Appointments</small></a>
+                        </li>
+                        <li class="nav-item ms-4">
+                            <!-- Margin for indentation -->
+                            <a class="nav-link" href="~/Appointments/IndexProcessing"><small>Appointments In Processing</small></a>
+                        </li>
+                        <li class="nav-item ms-4">
+                            <!-- Margin for indentation -->
+                            <a class="nav-link" href="~/Appointments/IndexFinished"><small>Finished Appointments</small></a>
+                        </li>
                         <hr />
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-user"></i> Users
+                            <a class="nav-link" href="~/Appointments/SendEmail">
+                                <i class="fas fa-envelope"></i> Send Email
                             </a>
                         </li>
                         <hr />
@@ -82,6 +96,12 @@
             </main>
         </div>
     </div>
+
+    <!-- Load jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Then render other scripts -->
+    @RenderSection("Scripts", false)
 
     <!-- Include FontAwesome JS at the end for icons -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>

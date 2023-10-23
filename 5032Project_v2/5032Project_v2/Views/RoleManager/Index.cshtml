@@ -1,0 +1,53 @@
+﻿@model IEnumerable<_5032Project_v2.Models.UserRolesViewModel>
+
+@{
+    ViewBag.Title = "Users & Roles";
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.jqueryui.min.css">
+
+<h2>Users & Roles</h2>
+
+@Html.ActionLink("Create New User", "Register", "Account", null, new { @class = "link" })
+<hr>
+
+<table id="usersRolesTable" class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Roles</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>
+                    <form action="@Url.Action("ChangeUserRole", "RoleManager")" method="post">
+                        <select name="roleName">
+                            @foreach (var role in user.AllRoles)
+                            {
+                                <option value="@role" @(user.RoleNames.Contains(role) ? "selected" : "")>@role</option>
+                            }
+                        </select>
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        <input type="submit" value="Change Role" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable();
+        });
+    </script>
+}
+

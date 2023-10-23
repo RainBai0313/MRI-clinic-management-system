@@ -12,30 +12,6 @@
         <h4>Create a new account.</h4>
         <hr />
         @Html.ValidationSummary("", new { @class = "text-danger" })
-        <!-- Add this for First Name -->
-        <div class="row">
-            @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
-            </div>
-        </div>
-
-        <!-- Add this for Last Name -->
-        <div class="row">
-            @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
-            </div>
-        </div>
-
-        <!-- Add this for Date of Birth -->
-        <div class="row">
-            @Html.LabelFor(m => m.DateOfBirth, new { @class = "col-md-2 col-form-label" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control" })
-            </div>
-        </div>
-
         <!-- The phone number should already be in the model, but if you added it again -->
         <div class="row">
             @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 col-form-label" })

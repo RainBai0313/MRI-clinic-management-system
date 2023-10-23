@@ -1,44 +1,99 @@
-﻿@model _5032Project_v2.Models.Appointment
+﻿@model _5032Project_v2.Models.AppointmentDetailsViewModel
 
 @{
     ViewBag.Title = "Delete";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
+<h2>Delete the Appointment</h2>
 
-<h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Appointment</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.UserId)
+            @Html.DisplayName("User Name:")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.UserId)
+            @Model.Appointment.FirstName @Model.Appointment.LastName
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.DateTime)
+            @Html.DisplayName("Clinic Selected:")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.DateTime)
+            @Html.DisplayFor(model => model.ClinicName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Status)
+            @Html.DisplayName("Appointment Date and Time Slot:")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Status)
+            @_5032Project_v2.Controllers.AppointmentsController.FormatAppointmentTime(Model.Appointment.DateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Current Appointment Status:")
+        </dt>
+
+        <dd>
+            @if (Model.Appointment.Status == 0)
+            {
+                @:Waiting for approval
+            }
+            else if (Model.Appointment.Status == 1)
+            {
+                @:Approved
+            }
+            else if (Model.Appointment.Status == 2)
+            {
+                @:Waiting for the imaging
+            }
+            else if (Model.Appointment.Status == 3)
+            {
+                @:Jobs has been completed
+            }
+            else
+            {
+                @:Rejected
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Your Feedback Rating:")
+        </dt>
+
+        <dd>
+            @if (Model.Appointment.FeedbackRating == null)
+            {
+                @:Waiting for feedback rating
+            }
+            else
+            {
+                @Model.Appointment.FeedbackRating;
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Your Feedback Comment:")
+        </dt>
+
+        <dd>
+            @if (Model.Appointment.FeedbackComment == null)
+            {
+                @:Waiting for feedback comment
+            }
+            else
+            {
+                @Model.Appointment.FeedbackComment;
+            }
         </dd>
 
     </dl>
-
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
@@ -46,4 +101,4 @@
             @Html.ActionLink("Back to List", "Index")
         </div>
     }
-</div>
+

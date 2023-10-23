@@ -1,0 +1,145 @@
+﻿@model _5032Project_v2.Models.AppointmentDetailsViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details of Your Appointment</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayName("User Name:")
+            </dt>
+
+            <dd>
+                @Model.Appointment.FirstName @Model.Appointment.LastName
+            </dd>
+
+            <dt>
+                @Html.DisplayName("Clinic Selected:")
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ClinicName)
+            </dd>
+
+            <dt>
+                @Html.DisplayName("Appointment Date and Time Slot:")
+            </dt>
+
+            <dd>
+                @_5032Project_v2.Controllers.AppointmentsController.FormatAppointmentTime(Model.Appointment.DateTime)
+            </dd>
+
+            <dt>
+                @Html.DisplayName("Current Appointment Status:")
+            </dt>
+
+            <dd>
+                @if (Model.Appointment.Status == 0)
+                {
+                    @:Waiting for approval
+                }
+                else if (Model.Appointment.Status == 1)
+                {
+                    @:Approved
+                }
+                else if (Model.Appointment.Status == 2)
+                {
+                    @:Waiting for the imaging
+                }
+                else if (Model.Appointment.Status == 3)
+                {
+                    @:Jobs has been done
+                }
+                else
+                {
+                    @:Rejected
+                }
+            </dd>
+        </dl>
+    </div>
+
+    <div class="col-md-4">
+        <h3>Leave a Rating:</h3>
+        <form method="post" action="@Url.Action("SaveFeedback")">
+            <input type="hidden" name="appointmentId" value="@Model.Appointment.AppointmentId" />
+
+            <div class="rate">
+                <input type="radio" id="star5" name="rating" value="5" />
+                <label for="star5" title="5 stars">5 stars</label>
+                <input type="radio" id="star4" name="rating" value="4" />
+                <label for="star4" title="4 stars">4 stars</label>
+                <input type="radio" id="star3" name="rating" value="3" />
+                <label for="star3" title="3 stars">3 stars</label>
+                <input type="radio" id="star2" name="rating" value="2" />
+                <label for="star2" title="2 stars">2 stars</label>
+                <input type="radio" id="star1" name="rating" value="1" />
+                <label for="star1" title="1 star">1 star</label>
+            </div>
+            <textarea name="feedbackComment" rows="4" cols="50" placeholder="Enter your feedback here..."></textarea>
+
+            <button type="submit" class="btn btn-primary">Leaving Feedback</button>
+        </form>
+    </div>
+</div>
+
+<hr>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.6/js/star-rating.min.js"></script>
+
+<!-- Initialize Plugin -->
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .rate {
+        float: left;
+        height: 46px;
+        padding: 0 10px;
+    }
+
+        .rate:not(:checked) > input {
+            position: absolute;
+            top: -9999px;
+        }
+
+        .rate:not(:checked) > label {
+            float: right;
+            width: 1em;
+            overflow: hidden;
+            white-space: nowrap;
+            cursor: pointer;
+            font-size: 30px;
+            color: #ccc;
+        }
+
+            .rate:not(:checked) > label:before {
+                content: '★ ';
+            }
+
+        .rate > input:checked ~ label {
+            color: #ffc700;
+        }
+
+        .rate:not(:checked) > label:hover,
+        .rate:not(:checked) > label:hover ~ label {
+            color: #deb217;
+        }
+
+        .rate > input:checked + label:hover,
+        .rate > input:checked + label:hover ~ label,
+        .rate > input:checked ~ label:hover,
+        .rate > input:checked ~ label:hover ~ label,
+        .rate > label:hover ~ input:checked ~ label {
+            color: #c59b08;
+        }
+</style>

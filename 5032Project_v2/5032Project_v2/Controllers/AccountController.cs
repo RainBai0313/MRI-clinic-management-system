@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using _5032Project_v2.Models;
+using Microsoft.Security.Application;
 
 namespace _5032Project_v2.Controllers
 {
@@ -90,6 +91,9 @@ namespace _5032Project_v2.Controllers
                         {
                             return RedirectToAction("Index", "Home"); // redirect to home index for patients
                         }
+                        else if (await UserManager.IsInRoleAsync(user.Id, "Manager")) {
+                            return RedirectToAction("Index", "RoleManager");
+                        }
                     }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
@@ -157,6 +161,7 @@ namespace _5032Project_v2.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
+        [ValidateInput(false)]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
@@ -165,18 +170,16 @@ namespace _5032Project_v2.Controllers
             {
                 var user = new ApplicationUser
                 {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    DateOfBirth = model.DateOfBirth,
-                    PhoneNumber = model.PhoneNumber
+                    UserName = Encoder.HtmlEncode(model.Email),
+                    Email = Encoder.HtmlEncode(model.Email),
+                    PhoneNumber = Encoder.HtmlEncode(model.PhoneNumber)
                 };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await UserManager.AddToRoleAsync(user.Id, "Patient");
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

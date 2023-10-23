@@ -13,6 +13,14 @@ namespace _5032Project_v2.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
+        public string ClinicName { get; set; }
+
+        public string FormattedDateTime { get; set; }
+
+        public int? FeedbackRating { get; set; }
+
+        public ICollection<MRIRecord> MRIRecords { get; set; }
+
     }
 
 }
